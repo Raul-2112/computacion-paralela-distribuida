@@ -59,6 +59,46 @@ mpiexec -n 4 mpi_02_Hibrido.exe
 
 ---
 
+## Respuestas a preguntas de análisis
+
+### 1. Con 2 procesos MPI y 4 hilos OMP, ¿cuántas unidades de cómputo hay?
+
+El numero de unidades de computo se saben mediante el calculo del numero de procesos mutiplicando por la cantidad de hilos que se crearon por procesos, en este caso.
+
+Total = 2 × 4 = 8
+
+Por lo tanto, existen **8 unidades de cómputo activas**, ejecutando tareas de una manera simultánea.
+
+---
+
+### 2. ¿Diferencia entre `-n 4` (4 MPI, 4 hilos) vs `-n 1` (1 MPI, 16 hilos)?
+
+Ambos casos generan **16 unidades de cómputo**, pero trabajan de una forma diferente:
+Por ejemplo:
+
+- **`-n 4` (4 MPI × 4 hilos):**
+  - Se crean 4 procesos independientes.
+  - Cada proceso genera 4 hilos.
+  - Existe mayor comunicación entre procesos.
+
+- **`-n 1` (1 MPI × 16 hilos):**
+  - Solo existe un proceso.
+  - Se crean 16 hilos dentro del mismo proceso.
+  - Hay menor overhead(recursos adicionales del equipo) de comunicación.
+
+ Entoces se tiene que la diferencia principal está en cómo se distribuye el trabajo y en el costo de comunicación de los procesos.
+
+---
+### 3. ¿Por qué `MPI_Init_thread` en lugar de `MPI_Init`?
+
+Se utiliza `MPI_Init_thread()` porque el programa combina  ambos conceptos de **MPI y OpenMP**, es decir, procesos e hilos simultáneamente.
+
+Siendo esto de ayuda para que así  los múltiples hilos que existen eviten tener conflictos en la ejecucion y uso de programación híbrida.
+
+En este caso, este ejercicio del laboratorio se utilizó `MPI_THREAD_FUNNELED`, que permite que solo el hilo principal invoque funciones MPI, aun asi teniendo la misma caracteristica para no causar problemas entre los hilos y el programa.
+
+---
+
 # Ejercicio 3: Suma hibrida de vector 
 
 ## Código fuente
@@ -99,10 +139,42 @@ mpiexec -n 4 mpi_04_speedup.exe
 
 ---
 
-## Tecnologías utilizadas
-- C
-- Microsoft MPI
-- OpenMP
-- MinGW-w64
-- Visual Studio Code
-- GitHub
+## Respuestas a preguntas de análisis
+
+### 1. ¿Coincide con la Ley de Amdahl?
+
+Sí. Ya que la Ley de Amdahl dice que la aceleración de un programa depende o está limitada por esa pequeña parte secuencial, lo que significa qué, aunque aumentemos el número de procesos e hilos, siempre existirá una parte del programa que no puede paralelizarse completamente, lo que limita un speedup total.
+
+---
+
+### 2. ¿Por qué más procesos/hilos no siempre dan mayor speedup?
+
+Porque al agregar más procesos o hilos eso significa que tambien se tendria costos adicionales, como:
+
+- sincronización,
+- comunicación entre procesos MPI,
+- acceso compartido a memoria;
+- entre otros casos que existan.
+
+Por eso, el programa puede que llege a un punto donde, el agregar más procesos/hilos no mejora el rendimiento e incluso puede disminuirlo, lo que puede que sea perdida de igual manera.
+
+---
+
+### 3. ¿Qué overhead introduce MPI que no existe en OpenMP puro?
+
+MPI introduce **sobrecarga de comunicación**, debido al intercambio de datos entre procesos mediante funciones como:
+
+- `MPI_Send`
+- `MPI_Recv`
+- `MPI_Scatter`
+- `MPI_Reduce`
+
+En OpenMP no existe costos en cuanto a la comunicación, por lo que los hilos comparten memoria, logrando ser asi mas rapido.
+
+---
+
+# Conclusiones
+
+1. Cuando se trabaja con programacion parelalela nos permite ver que, se puede reducir el tiempo de ejecucion del programa dividiendo su trabajo en multiples partes de procesamiento.
+2. Por otra parte se tiene el tema de MPI, en el cual se trabajan los procesos de manera inndependiente junto al parelelismo que brinda OPENMP que son los hilos que se ejecutan dentro de un mismo proceso, teniendo con esto un trabajo hibrido aprovechando el rendimiento del hardware, pero tambien aun así teniendo todos estos procesos que si mejora el programa, no siempre existira un rendimiento 100/100, ya que esta esa parte secuencial del mismo que lo limita o el overhead que se deba generar.
+
