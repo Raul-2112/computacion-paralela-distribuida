@@ -12,15 +12,15 @@
 
 ---
 ## Índice
-1. [Ejercicio 1 — Hola GPU](#ejercicio 1 — Hola GPU)
-2. [Ejercicio 2 — Copia de Matriz 2D](#ejercicio 2 — Copia de Matriz 2D)
-3. [Ejercicio 3 — Información del Device](#ejercicio 3 — Información del Device)
-4. [Ejercicio 4 — Suma de Vectores Paralela](#ejercicio 4 — Suma de Vectores Paralela)
-5. [Ejercicio 5 — Cuadrado de Elementos In-place](#ejercicio 5 — Cuadrado de Elementos In-place)
-6. [Ejercicio 6 — Kernel 2D: Inicialización de Matriz](#ejercicio 6 — Kernel 2D: Inicialización de Matriz)
-7. [Ejercicio 7 — Reducción Paralela con Shared Memory](#ejercicio 7 — Reducción Paralela con Shared Memory)
-8. [Ejercicio 8 — Multiplicación Escalar y Medición de Tiempo](#ejercicio 8 — Multiplicación Escalar y Medición de Tiempo)
-9. [Ejercicio 9 — Producto Punto de Vectores](#ejercicio 9 — Producto Punto de Vectores)
+1. [Ejercicio 1 — Hola GPU](#ejercicio-1)
+2. [Ejercicio 2 — Copia de Matriz 2D](#ejercicio-2)
+3. [Ejercicio 3 — Información del Device](#ejercicio-3)
+4. [Ejercicio 4 — Suma de Vectores Paralela](#ejercicio-4)
+5. [Ejercicio 5 — Cuadrado de Elementos In-place](#ejercicio-5)
+6. [Ejercicio 6 — Kernel 2D: Inicialización de Matriz](#ejercicio-6)
+7. [Ejercicio 7 — Reducción Paralela con Shared Memory](#ejercicio-7)
+8. [Ejercicio 8 — Multiplicación Escalar y Medición de Tiempo](#ejercicio-8)
+9. [Ejercicio 9 — Producto Punto de Vectores](#ejercicio-9)
 
 ---
 
