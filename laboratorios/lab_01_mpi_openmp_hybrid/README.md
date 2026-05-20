@@ -39,6 +39,19 @@ mpiexec -n 2 .\mpi_01_hola.exe
 ![Ejercicio 1](img/ejecucion_ej1.png)
 ---
 
+## Respuestas a preguntas de análisis
+### 1. ¿Por qué el orden de salida varía entre ejecuciones  
+Porque los procesos MPI se ejecutan de forma completamente independiente y en paralelo real. Cuando cada proceso llega a su instrucción `printf`, el sistema operativo decide qué proceso obtiene acceso a la salida estándar en cada momento según la planificación del CPU. No existe ningún mecanismo implícito de orden entre procesos MPI, por eso la secuencia cambia en cada ejecución. Esto no es un error: es la naturaleza del paralelismo de memoria distribuida.
+---
+
+### 2. ¿Qué pasaría si ejecutas con `-n 1?  
+El programa funcionaría correctamente pero no habría paralelismo real. Existiría un solo proceso (rank 0, size 1), así que imprimiría "Proceso 0 de 1: ¡Hola desde MPI!" y luego el mensaje del maestro. No tendría sentido usar MPI para un único proceso, ya que se pierde toda la ventaja de la distribución de trabajo y se añade el overhead de inicialización de MPI sin ningún beneficio.
+---
+### 3. ¿Para qué sirve `MPI_COMM_WORLD`?  
+`MPI_COMM_WORLD` es el comunicador por defecto que agrupa a **todos** los procesos lanzados con `mpiexec`. Un comunicador define el contexto de comunicación: qué procesos pueden enviarse mensajes entre sí y bajo qué numeración. Sí podrían existir otros comunicadores: con `MPI_Comm_split` o `MPI_Comm_create` se pueden crear subcomunicadores que agrupen solo un subconjunto de procesos, lo cual es útil para estructurar algoritmos complejos donde distintos grupos de procesos realizan tareas diferentes.
+
+---
+
 # Ejercicio 2: Programación Híbrida MPI + OpenMP
 
 ## Código fuente
@@ -116,6 +129,21 @@ mpiexec -n 4 .\mpi_03.exe
 
 ## Evidencia
 ![Ejercicio 3](img/ejecucion_ej3.png)
+
+---
+## Respuestas a preguntas de análisis
+
+### 1. ¿Qué hace exactamente `MPI_Scatter`?
+`MPI_Scatter` toma un arreglo que existe en el proceso raíz (rank 0) y lo divide en bloques iguales de `count` elementos, enviando uno a cada proceso del comunicador, incluyendo al propio proceso 0. Es una operación colectiva: **todos** los procesos deben llamarla (incluido el maestro) porque es una comunicación de uno-a-todos. El proceso raíz envía, y cada proceso (incluido él mismo) recibe su bloque en el buffer `local`. Esto evita tener que hacer múltiples `MPI_Send`/`MPI_Recv` manuales.
+---
+
+### 2. ¿Por qué `reduction(+:suma_local)` y no una variable compartida?
+Si varios hilos OpenMP escribieran simultáneamente en una misma variable compartida (`suma_local += local[i]`), ocurrirían condiciones de carrera: dos hilos podrían leer el mismo valor, sumarle su elemento y escribir de vuelta, perdiéndose una de las sumas. La cláusula `reduction(+:suma_local)` resuelve esto creando una copia privada de `suma_local` por cada hilo; cada hilo acumula en su copia sin conflictos, y al final de la región paralela OpenMP combina todas las copias con una suma. Es más eficiente que usar una sección crítica porque elimina la serialización.
+---
+
+ ### 3.¿Qué pasaría si olvidaras `MPI_Reduce` e imprimieras `suma_local` en rank 0? 
+El proceso 0 solo imprimiría su propia suma parcial (la correspondiente a los primeros 250,000 elementos si hay 4 procesos), ignorando las sumas de los otros tres procesos. El resultado sería aproximadamente 1/4 del valor correcto. Además, los procesos 1, 2 y 3 habrían terminado su trabajo sin que nadie recogiera sus resultados, lo que constituye un error lógico grave aunque no necesariamente cause un crash.
+
 
 ---
 
