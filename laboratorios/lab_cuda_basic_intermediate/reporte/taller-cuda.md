@@ -12,19 +12,19 @@
 
 ---
 ## Índice
-1. [Ejercicio 1 — Hola GPU](#ejercicio-1)
-2. [Ejercicio 2 — Copia de Matriz 2D](#ejercicio-2)
-3. [Ejercicio 3 — Información del Device](#ejercicio-3)
-4. [Ejercicio 4 — Suma de Vectores Paralela](#ejercicio-4)
-5. [Ejercicio 5 — Cuadrado de Elementos In-place](#ejercicio-5)
-6. [Ejercicio 6 — Kernel 2D: Inicialización de Matriz](#ejercicio-6)
-7. [Ejercicio 7 — Reducción Paralela con Shared Memory](#ejercicio-7)
-8. [Ejercicio 8 — Multiplicación Escalar y Medición de Tiempo](#ejercicio-8)
-9. [Ejercicio 9 — Producto Punto de Vectores](#ejercicio-9)
+1. [Ejercicio 1 — Hola GPU](#ejercicio 1 — Hola GPU)
+2. [Ejercicio 2 — Copia de Matriz 2D](#ejercicio 2 — Copia de Matriz 2D)
+3. [Ejercicio 3 — Información del Device](#ejercicio 3 — Información del Device)
+4. [Ejercicio 4 — Suma de Vectores Paralela](#ejercicio 4 — Suma de Vectores Paralela)
+5. [Ejercicio 5 — Cuadrado de Elementos In-place](#ejercicio 5 — Cuadrado de Elementos In-place)
+6. [Ejercicio 6 — Kernel 2D: Inicialización de Matriz](#ejercicio 6 — Kernel 2D: Inicialización de Matriz)
+7. [Ejercicio 7 — Reducción Paralela con Shared Memory](#ejercicio 7 — Reducción Paralela con Shared Memory)
+8. [Ejercicio 8 — Multiplicación Escalar y Medición de Tiempo](#ejercicio 8 — Multiplicación Escalar y Medición de Tiempo)
+9. [Ejercicio 9 — Producto Punto de Vectores](#ejercicio 9 — Producto Punto de Vectores)
 
 ---
 
-## Ejercicio 1 — Hola GPU: Mi primer programa CUDA {#ejercicio-1}
+## Ejercicio 1 — Hola GPU
 
 ### ¿Qué hace el código?
 Inicializa un arreglo de 10 enteros en la CPU (valores `0, 3, 6, …, 27`), reserva memoria equivalente en la GPU con `cudaMalloc`, copia los datos `CPU → GPU` y luego `GPU → CPU` en un arreglo distinto. Finalmente compara elemento a elemento con `h_datos[i] != h_resultado[i]` para confirmar que todos los valores llegaron intactos.
@@ -35,11 +35,11 @@ nvcc ejercicio1_hola_gpu.cu -o ejercicio1
 ./ejercicio1
 ```
 
-## Evidencia
+> 📸 **Evidencia:**
 ![Ejercicio 1](ejercicio1_hola_gpu/img/ejercicio1_hola_gpu.png)
 ---
 
-## Ejercicio 2 — Copia de Matriz 2D CPU ↔ GPU {#ejercicio-2}
+## Ejercicio 2 — Copia de Matriz 2D
 
 ### ¿Qué hace el código?
 Inicializa una matriz 3×4 de `float` aplanada en un arreglo 1D (valores `1.5, 3.0, 4.5, …`). La transfiere `CPU → GPU → CPU` sin ningún cálculo en la GPU. La **TAREA** añade un bucle de verificación que compara cada par `h_original[i]` vs `h_recuperada[i]` usando `fabsf(a - b) < 1e-5f` para tolerar errores de redondeo propios del tipo `float`.
@@ -69,11 +69,11 @@ Verificacion automatica (tolerancia 1e-5):
 ### TAREA — Verificación automática
 Se usa `fabsf` en lugar de `==` porque los `float` tienen representación binaria limitada; una comparación exacta puede fallar incluso cuando el valor es "el mismo". La tolerancia `1e-5f` es segura para operaciones de copia pura donde no hay aritmética.
 
-> 📸 **Evidencia:** *(adjuntar pantallazo de compilación y ejecución)*
+> 📸 **Evidencia:** 
 ![Ejercicio 2](ejercicio2_matriz/img/ejercicio2_matriz.png)
 ---
 
-## Ejercicio 3 — Información del Device {#ejercicio-3}
+## Ejercicio 3 — Información del Device 
 
 ### ¿Qué hace el código?
 Usa `cudaGetDeviceCount` para detectar cuántas GPUs hay disponibles y `cudaGetDeviceProperties` para leer sus propiedades: nombre, compute capability, memoria total, shared memory por bloque, máximo de hilos por bloque, número de SMs, frecuencia, ancho de bus y dimensiones máximas de grilla/bloque. La **TAREA** calcula el total de hilos simultáneos máximos.
@@ -113,11 +113,11 @@ Total hilos = multiProcessorCount × maxThreadsPerMultiProcessor
 
 Para la GTX 1060: `10 × 2048 = 20 480 hilos simultáneos`. Este número representa la *ocupación máxima teórica*: cuántos hilos pueden estar residentes en la GPU al mismo tiempo (en distintos estados de ejecución). Es diferente del número total de hilos que puede *lanzar* una grilla, que es potencialmente miles de millones.
 
-> 📸 **Evidencia:** *(adjuntar pantallazo de compilación y ejecución)*
+> 📸 **Evidencia:** 
 ![Ejercicio 3](ejercicio3_device_info/img/ejercicio3_device_info.png)
 ---
 
-## Ejercicio 4 — Suma de Vectores Paralela {#ejercicio-4}
+## Ejercicio 4 — Suma de Vectores Paralela 
 
 ### ¿Qué hace el código?
 El "Hola Mundo" de CUDA. Crea dos vectores `h_A` y `h_B` de 1 000 000 de `float`, los copia a la GPU, lanza el kernel `sumaVectores` donde cada hilo calcula `d_C[idx] = d_A[idx] + d_B[idx]`, y verifica que el resultado sea `3.0f` en toda posición. El número de bloques se calcula con la fórmula estándar:
@@ -144,11 +144,11 @@ h_C[N-1] = 3.0 (esperado: 3.0)
 
 **Nota:** Se lanzan 1 000 192 hilos aunque el vector tiene 1 000 000 elementos. El `if (idx < n)` en el kernel protege de escrituras fuera de límites para los 192 hilos sobrantes.
 
-> 📸 **Evidencia:** *(adjuntar pantallazo de compilación y ejecución)*
+> 📸 **Evidencia:** 
 ![Ejercicio 4](ejercicio4_suma_vectores/img/ejercicio4_suma_vectores.png)
 ---
 
-## Ejercicio 5 — Cuadrado de Elementos In-place {#ejercicio-5}
+## Ejercicio 5 — Cuadrado de Elementos In-place 
 
 ### ¿Qué hace el código?
 Inicializa `h_datos = [1, 2, 3, …, 20]`, lo copia a la GPU y lanza el kernel `cuadradoInPlace` que escribe `d_datos[idx] = d_datos[idx] * d_datos[idx]` sobre el **mismo** puntero (in-place). Recupera el resultado y la **TAREA** verifica que `h_datos[i] == (i+1)^2` para todo `i`.
@@ -173,11 +173,11 @@ Verificacion (esperado: 1, 4, 9, 16, ... 400):
 ### TAREA — Verificación
 El bucle compara `h_datos[i]` con `(i+1)*(i+1)`. Si alguno difiere, imprime el índice y los valores. La operación in-place es posible porque cada hilo escribe **solo** en su propia posición `idx`; no hay dependencias entre hilos.
 
-> 📸 **Evidencia:** *(adjuntar pantallazo de compilación y ejecución)*
+> 📸 **Evidencia:** 
 ![Ejercicio 5](ejercicio5_cuadrado/img/ejercicio5_cuadrado.png)
 ---
 
-## Ejercicio 6 — Kernel 2D: Inicialización de Matriz {#ejercicio-6}
+## Ejercicio 6 — Kernel 2D: Inicialización de Matriz
 
 ### ¿Qué hace el código?
 Lanza un kernel con dimensiones `dim3 hilosPorBloque(COLS, FILAS)` para que cada hilo corresponda a una celda `(fila, col)` de la matriz 4×5. El **kernel original** almacena el índice lineal `fila * COLS + col`. La **TAREA** implementa un segundo kernel que almacena `fila + col`.
@@ -206,11 +206,11 @@ Kernel 2 (TAREA) - mat[i][j] = i + j:
 ### TAREA — Kernel con `mat[i][j] = i + j`
 El único cambio respecto al kernel original es reemplazar `d_mat[idx] = idx` por `d_mat[idx] = fila + col`. Las variables `fila` y `col` ya estaban calculadas para el guard de límites, por lo que no se necesita lógica adicional.
 
-> 📸 **Evidencia:** *(adjuntar pantallazo de compilación y ejecución)*
+> 📸 **Evidencia:** 
 ![Ejercicio 6](ejercicio6_kernel2d/img/ejercicio6_kernel2d.png)
 ---
 
-## Ejercicio 7 — Reducción Paralela con Shared Memory {#ejercicio-7}
+## Ejercicio 7 — Reducción Paralela con Shared Memory 
 
 ### ¿Qué hace el código?
 Suma 1024 enteros (todos `= 1`, resultado esperado `1024`) usando **reducción en árbol** con `shared memory`. El kernel carga los datos globales a `s_datos[]` (SRAM del bloque), luego en cada iteración la mitad activa de los hilos acumula su valor con el del hilo a distancia `stride`. Al final, el hilo 0 de cada bloque escribe la suma parcial en `d_salida[blockIdx.x]`. La CPU suma los 4 parciales.
@@ -232,11 +232,11 @@ Suma calculada (GPU): 1024
 ### Por qué `__syncthreads()` es crucial
 Sin la barrera, los hilos del nivel siguiente del árbol podrían leer `s_datos[tid + stride]` **antes** de que el hilo vecino haya terminado de escribirlo. `__syncthreads()` garantiza una **barrera de memoria** interna al bloque: ningún hilo avanza hasta que todos llegaron a ese punto, eliminando la condición de carrera (*race condition*).
 
-> 📸 **Evidencia:** *(adjuntar pantallazo de compilación y ejecución)*
+> 📸 **Evidencia:** 
 ![Ejercicio 7](ejercicio7_reduccion/img/ejercicio7_reduccion.png)
 ---
 
-## Ejercicio 8 — Multiplicación Escalar y Medición de Tiempo {#ejercicio-8}
+## Ejercicio 8 — Multiplicación Escalar y Medición de Tiempo
 
 ### ¿Qué hace el código?
 Multiplica 10 000 000 de `float` por el escalar `2.5f`. Mide el tiempo GPU con **CUDA Events** (`cudaEventRecord` + `cudaEventElapsedTime`) y el tiempo CPU con `clock()`. Calcula el *bandwidth* efectivo de la GPU en GB/s y compara ambos tiempos.
@@ -265,11 +265,11 @@ h_vec[0]        : 2.5 (esperado 2.5)
 ### TAREA — Comparación CPU vs GPU
 La CPU realiza la operación secuencialmente, mientras la GPU lo hace con miles de hilos en paralelo. En operaciones *memory-bound* como esta (sin lógica compleja), la GPU supera ampliamente a la CPU gracias a su mayor ancho de banda de memoria (GDDR6 vs DDR4). El *overhead* de transferencia `cudaMemcpy` penaliza a la GPU para N pequeños, pero a 10 millones de elementos la ventaja es clara.
 
-> 📸 **Evidencia:** *(adjuntar pantallazo de compilación y ejecución)*
+> 📸 **Evidencia:** 
 ![Ejercicio 8](ejercicio8_tiempo/img/ejercicio8_tiempo.png)
 ---
 
-## Ejercicio 9 — Producto Punto de Vectores {#ejercicio-9}
+## Ejercicio 9 — Producto Punto de Vectores 
 
 ### ¿Qué hace el código?
 Calcula el producto punto `∑ a[i]·b[i]` usando el mismo patrón de reducción del Ejercicio 7, pero con un paso previo de multiplicación. **Caso 1:** vectores de `1.0f`, resultado esperado `N = 4096`. **TAREA:** vectores aleatorios con verificación contra resultado de CPU usando tolerancia relativa `1e-4`.
@@ -297,7 +297,7 @@ Diferencia absoluta             = 0.003906  (tolerancia 0.102385)
 ### TAREA — Vectores aleatorios y tolerancia
 El resultado de la CPU se calcula en `double` para maximizar precisión y servir como referencia. La GPU opera en `float` (32 bits), y la suma de 4096 multiplicaciones acumula error de redondeo. Por eso se usa tolerancia relativa `fabsf(ref) * 1e-4f` en lugar de comparar exactamente. Esta diferencia no es un error del programa sino una propiedad fundamental de la aritmética en punto flotante.
 
-> 📸 **Evidencia:** *(adjuntar pantallazo de compilación y ejecución)*
+> 📸 **Evidencia:** 
 ![Ejercicio 9](ejercicio9_producto_punto/img/ejercicio9_producto_punto.png)
 ---
 
