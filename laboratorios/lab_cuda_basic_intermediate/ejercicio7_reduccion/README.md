@@ -42,4 +42,6 @@ Suma calculada (GPU): 1024
 
 ## Evidencia
 
-> *(adjuntar pantallazo de compilación y ejecución)*
+## Evidencia
+
+![Resultado ejercicio 7](img/ejercicio7_reduccion.png)

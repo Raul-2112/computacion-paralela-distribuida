@@ -45,4 +45,6 @@ Diferencia absoluta             = 0.003906  (tolerancia 0.102385)
 
 ## Evidencia
 
-> *(adjuntar pantallazo de compilación y ejecución)*
+## Evidencia
+
+![Resultado ejercicio 9](img/ejercicio9_producto_punto.png)

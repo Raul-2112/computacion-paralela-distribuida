@@ -47,4 +47,6 @@ GPUs CUDA disponibles en este sistema: 1
 
 ## Evidencia
 
-> *(adjuntar pantallazo de compilación y ejecución)*
+## Evidencia
+
+![Resultado ejercicio 3](img/ejercicio3_device_info.png)

@@ -44,4 +44,6 @@ Kernel 2 (TAREA) - mat[i][j] = i + j:
 
 ## Evidencia
 
-> *(adjuntar pantallazo de compilación y ejecución)*
+## Evidencia
+
+![Resultado ejercicio 6](img/ejercicio6_kernel2d.png)

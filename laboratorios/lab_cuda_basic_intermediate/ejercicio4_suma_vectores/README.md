@@ -37,4 +37,6 @@ h_C[N-1] = 3.0 (esperado: 3.0)
 
 ## Evidencia
 
-> *(adjuntar pantallazo de compilación y ejecución)*
+## Evidencia
+
+![Resultado ejercicio 4](img/ejercicio4_suma_vectores.png)

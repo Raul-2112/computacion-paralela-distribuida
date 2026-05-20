@@ -36,7 +36,7 @@ nvcc ejercicio1_hola_gpu.cu -o ejercicio1
 ```
 
 ## Evidencia
-![Ejercicio 1](img/ej1.png)
+![Ejercicio 1](ejercicio1_hola_gpu/img/ejercicio1_hola_gpu.png)
 ---
 
 ## Ejercicio 2 — Copia de Matriz 2D CPU ↔ GPU {#ejercicio-2}
@@ -70,7 +70,7 @@ Verificacion automatica (tolerancia 1e-5):
 Se usa `fabsf` en lugar de `==` porque los `float` tienen representación binaria limitada; una comparación exacta puede fallar incluso cuando el valor es "el mismo". La tolerancia `1e-5f` es segura para operaciones de copia pura donde no hay aritmética.
 
 > 📸 **Evidencia:** *(adjuntar pantallazo de compilación y ejecución)*
-
+![Ejercicio 2](ejercicio2_matriz/img/ejercicio2_matriz.png)
 ---
 
 ## Ejercicio 3 — Información del Device {#ejercicio-3}
@@ -114,7 +114,7 @@ Total hilos = multiProcessorCount × maxThreadsPerMultiProcessor
 Para la GTX 1060: `10 × 2048 = 20 480 hilos simultáneos`. Este número representa la *ocupación máxima teórica*: cuántos hilos pueden estar residentes en la GPU al mismo tiempo (en distintos estados de ejecución). Es diferente del número total de hilos que puede *lanzar* una grilla, que es potencialmente miles de millones.
 
 > 📸 **Evidencia:** *(adjuntar pantallazo de compilación y ejecución)*
-
+![Ejercicio 3](ejercicio3_device_info/img/ejercicio3_device_info.png)
 ---
 
 ## Ejercicio 4 — Suma de Vectores Paralela {#ejercicio-4}
@@ -145,7 +145,7 @@ h_C[N-1] = 3.0 (esperado: 3.0)
 **Nota:** Se lanzan 1 000 192 hilos aunque el vector tiene 1 000 000 elementos. El `if (idx < n)` en el kernel protege de escrituras fuera de límites para los 192 hilos sobrantes.
 
 > 📸 **Evidencia:** *(adjuntar pantallazo de compilación y ejecución)*
-
+![Ejercicio 4](ejercicio4_suma_vectores/img/ejercicio4_suma_vectores.png)
 ---
 
 ## Ejercicio 5 — Cuadrado de Elementos In-place {#ejercicio-5}
@@ -174,7 +174,7 @@ Verificacion (esperado: 1, 4, 9, 16, ... 400):
 El bucle compara `h_datos[i]` con `(i+1)*(i+1)`. Si alguno difiere, imprime el índice y los valores. La operación in-place es posible porque cada hilo escribe **solo** en su propia posición `idx`; no hay dependencias entre hilos.
 
 > 📸 **Evidencia:** *(adjuntar pantallazo de compilación y ejecución)*
-
+![Ejercicio 5](ejercicio5_cuadrado/img/ejercicio5_cuadrado.png)
 ---
 
 ## Ejercicio 6 — Kernel 2D: Inicialización de Matriz {#ejercicio-6}
@@ -207,7 +207,7 @@ Kernel 2 (TAREA) - mat[i][j] = i + j:
 El único cambio respecto al kernel original es reemplazar `d_mat[idx] = idx` por `d_mat[idx] = fila + col`. Las variables `fila` y `col` ya estaban calculadas para el guard de límites, por lo que no se necesita lógica adicional.
 
 > 📸 **Evidencia:** *(adjuntar pantallazo de compilación y ejecución)*
-
+![Ejercicio 6](ejercicio6_kernel2d/img/ejercicio6_kernel2d.png)
 ---
 
 ## Ejercicio 7 — Reducción Paralela con Shared Memory {#ejercicio-7}
@@ -233,7 +233,7 @@ Suma calculada (GPU): 1024
 Sin la barrera, los hilos del nivel siguiente del árbol podrían leer `s_datos[tid + stride]` **antes** de que el hilo vecino haya terminado de escribirlo. `__syncthreads()` garantiza una **barrera de memoria** interna al bloque: ningún hilo avanza hasta que todos llegaron a ese punto, eliminando la condición de carrera (*race condition*).
 
 > 📸 **Evidencia:** *(adjuntar pantallazo de compilación y ejecución)*
-
+![Ejercicio 7](ejercicio7_reduccion/img/ejercicio7_reduccion.png)
 ---
 
 ## Ejercicio 8 — Multiplicación Escalar y Medición de Tiempo {#ejercicio-8}
@@ -266,7 +266,7 @@ h_vec[0]        : 2.5 (esperado 2.5)
 La CPU realiza la operación secuencialmente, mientras la GPU lo hace con miles de hilos en paralelo. En operaciones *memory-bound* como esta (sin lógica compleja), la GPU supera ampliamente a la CPU gracias a su mayor ancho de banda de memoria (GDDR6 vs DDR4). El *overhead* de transferencia `cudaMemcpy` penaliza a la GPU para N pequeños, pero a 10 millones de elementos la ventaja es clara.
 
 > 📸 **Evidencia:** *(adjuntar pantallazo de compilación y ejecución)*
-
+![Ejercicio 8](ejercicio8_tiempo/img/ejercicio8_tiempo.png)
 ---
 
 ## Ejercicio 9 — Producto Punto de Vectores {#ejercicio-9}
@@ -298,7 +298,7 @@ Diferencia absoluta             = 0.003906  (tolerancia 0.102385)
 El resultado de la CPU se calcula en `double` para maximizar precisión y servir como referencia. La GPU opera en `float` (32 bits), y la suma de 4096 multiplicaciones acumula error de redondeo. Por eso se usa tolerancia relativa `fabsf(ref) * 1e-4f` en lugar de comparar exactamente. Esta diferencia no es un error del programa sino una propiedad fundamental de la aritmética en punto flotante.
 
 > 📸 **Evidencia:** *(adjuntar pantallazo de compilación y ejecución)*
-
+![Ejercicio 9](ejercicio9_producto_punto/img/ejercicio9_producto_punto.png)
 ---
 
 ## Reflexión Final

@@ -43,4 +43,6 @@ h_vec[0]        : 2.5 (esperado 2.5)
 
 ## Evidencia
 
-> *(adjuntar pantallazo de compilación y ejecución)*
+## Evidencia
+
+![Resultado ejercicio 8](img/ejercicio8_tiempo.png)

@@ -41,4 +41,6 @@ Verificacion automatica (tolerancia 1e-5):
 
 ## Evidencia
 
-> *(adjuntar pantallazo de compilación y ejecución)*
+## Evidencia
+
+![Resultado ejercicio 2](img/ejercicio2_matriz.png)

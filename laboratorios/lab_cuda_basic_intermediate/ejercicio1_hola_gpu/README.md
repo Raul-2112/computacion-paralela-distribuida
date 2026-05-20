@@ -34,4 +34,6 @@ Verificacion de datos:
 
 ## Evidencia
 
-> *(adjuntar pantallazo de compilación y ejecución)*
+## Evidencia
+
+![Resultado ejercicio 1](img/ejercicio1_hola_gpu.png)
