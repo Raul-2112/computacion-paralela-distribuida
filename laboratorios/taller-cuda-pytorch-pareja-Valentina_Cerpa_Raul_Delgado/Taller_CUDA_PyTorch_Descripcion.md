@@ -227,7 +227,10 @@ Antes de responder, observen su gráfica generada y usen esta escala para interp
 ### Preguntas
 
 1. Según la escala, ¿en qué rango quedó el Loss final de su modelo? ¿Lo consideran un buen resultado para 3 épocas? Justifiquen con base en la gráfica que generaron.
+- Rta:El loss final quedó entre 0.06 y 0.07, lo que según la escala representa un resultado muy bueno. Para solo 3 épocas, el modelo aprendió correctamente y las curvas de entrenamiento y prueba se mantuvieron cercanas, indicando un aprendizaje estable y sin mucho sobreajuste.
+
 2. Observen en qué época convergen las dos líneas. ¿Qué creen que pasaría si entrenaran 2 épocas más — el loss seguiría bajando indefinidamente o en algún punto se detendría? ¿Qué riesgo aparece si se entrena demasiado?
+- Rta:Las líneas convergen entre la época 2 y 3. Si se entrenara más, el loss seguiría bajando un poco hasta estabilizarse. El riesgo de entrenar demasiado es el overfitting, donde el modelo memoriza los datos y pierde capacidad para generalizar con imágenes nuevas.
 
 ---
 
@@ -237,9 +240,9 @@ Antes de responder, observen su gráfica generada y usen esta escala para interp
 
 ### Preguntas
 1. ¿Por qué la precisión se mide sobre datos que el modelo nunca vio durante el entrenamiento y no sobre los mismos datos con los que aprendió?
-- Rta: 
+- Rta: Porque lo que se busca es que  el modelo por medio de las prueba ver es si el modelo memorizó los datos de entrenamiento que revelan si aprendió el patrón general o solo los ejemplos específicos que se les señalo
 2. Observen los dígitos que el modelo clasificó mal. ¿Tienen algo en común? ¿Por qué creen que la red se equivocó en esos casos específicos?
-- Rta: 
+- Rta: Pues si hubieron erros mas que todo en el caso de 9 ->1 y 7->1 y tal vez eso se de por curvas que que se generan entre pixeles
 3. Si quisieran mejorar la precisión del modelo, ¿qué cambiarían de la arquitectura o del entrenamiento? Propongan al menos dos modificaciones y justifiquen cada una.
 - Rta: 
 
@@ -336,11 +339,12 @@ print(f'El modelo CPU predice: {prediccion}')
 
 ### Preguntas
 1. ¿El modelo acertó con tu dígito dibujado a mano? Si falló, ¿por qué creen que se equivocó? Comparen su imagen con las del dataset MNIST — ¿se ven similares o muy diferentes?
-- Rta: 
+- Rta: El modelo acertó cuando el número dibujado tenía características similares a las imágenes del dataset MNIST. Cuando falló, normalmente fue porque el estilo de escritura, el grosor o la forma eran diferentes a los ejemplos de entrenamiento.
+
 2. El preprocesamiento invierte los colores de la imagen (`ImageOps.invert`). ¿Por qué es necesario hacer eso antes de pasarla al modelo? ¿Qué pasaría si no se hiciera?
-- Rta: 
+- Rta: Es necesario invertir los colores porque MNIST utiliza fondo negro y dígitos blancos. Si no se invierten los colores, el modelo interpretaría incorrectamente las características visuales y aumentaría la probabilidad de error.
 3. Prueben con un dígito que crean que va a fallar — por ejemplo un 4 o un 9 escritos de forma poco convencional. ¿Falló? ¿Qué dice eso sobre las limitaciones del modelo entrenado solo con MNIST?
-- Rta: 
+- Rta: Cuando se probaron números escritos de forma poco convencional, el modelo tendió a equivocarse. Esto demuestra que el modelo aprende patrones específicos del dataset y tiene limitaciones para generalizar ante estilos muy diferentes.
 4. Tomar captura, de almenos una predicción que se haya hecho correctamente.
 - Rta: 
 ![Pantallazo 7](img/pantallazo_6.jpg)
@@ -383,11 +387,14 @@ for i, p in enumerate(prob_cpu):
 
 **Observen y respondan:**
 1. ¿Cuál dígito tiene la probabilidad más alta en cada modelo? ¿Coincide con la predicción?
-- Rta: 
+- Rta: El dígito con mayor porcentaje es el que el modelo "elige" como respuesta. No puede haber discrepancia entre el más alto y la predicción porque la predicción se define como ese máximo. Lo que sí puede variar es el margen — a veces el más alto es 97% (muy seguro), otras veces es 34% (dudando).
 2. ¿El modelo está seguro o dudando? ¿Cómo lo saben mirando los porcentajes?
 - Rta: 
+![DIAGRAMA 4](img/diagrama_4.jpg)
+La señal clave no es solo el valor más alto, sino la forma de la distribución completa. En el Caso A, toda la probabilidad está concentrada en un solo dígito — la distribución Softmax es puntiaguda. En el Caso C, la probabilidad está repartida entre varios dígitos — la distribución es plana, lo que indica que la imagen no se parece claramente a ninguno de los patrones que aprendió el modelo.
 3. Si el porcentaje más alto es menor al 50%, ¿confiarían en esa predicción? ¿Por qué?
-- Rta: 
+- Rta:No, y hay una razón matemática precisa: si ningún dígito supera el 50%, significa que la suma de todas las demás alternativas supera a la opción elegida. El modelo está diciendo literalmente "creo más en todo lo demás junto que en esta respuesta".
+En un clasificador de 10 clases, si la distribución fuera perfectamente uniforme (total incertidumbre), cada dígito tendría 10%. Un valor del 34% está apenas 3× por encima de ese ruido de fondo — es una señal muy débil.
 
 ---
 
@@ -400,8 +407,10 @@ El bloque de código lo reemplazas con la función completa que ya tenemos. ¿Lo
 
 ### Preguntas
 1. Ahora que completaron todo el taller, ¿en qué se parece PyTorch a programar en CUDA directamente y en qué se diferencia? ¿Cuándo usarían uno y cuándo el otro?
-- Rta: 
+- Rta: PyTorch y CUDA se parecen en que ambos aprovechan el procesamiento paralelo de la GPU. La diferencia es que PyTorch abstrae muchos detalles técnicos y facilita el desarrollo de modelos de inteligencia artificial, mientras que CUDA ofrece control de bajo nivel y mayor capacidad de optimización.
 2. Diagramen en Excalidraw el flujo completo del taller: desde la activación de la GPU hasta la predicción final. Úsenlo como resumen visual de todo lo que hicieron.
 - Rta: 
+![DIAGRAMA 5](img/diagrama_5.jpg)
+
 3. Si tuvieran que explicarle este taller a alguien que nunca ha programado, ¿cómo describirían en una sola analogía lo que hace una red neuronal entrenándose en una GPU?
-- Rta: 
+- Rta: Una red neuronal entrenándose en una GPU puede compararse con miles de personas resolviendo ejercicios matemáticos al mismo tiempo mientras un profesor corrige constantemente los errores para mejorar cada vez más rápido el aprendizaje colectivo.
